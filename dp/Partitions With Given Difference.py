@@ -38,37 +38,36 @@ d = 3
 
 
 ## tabulation
-def countPartitions(n: int, d: int, arr: List[int]) -> int:
+def findWays(num: List[int], tar: int) -> int:
     # write your code here
-    total = sum(arr)
-    
-    if total-d < 0:
-        return 0
-    if (total-d)%2 == 1:
-        return 0
-    
-    target = (total - d)//2
+    n = len(num)
+    dp = [[0]*(tar+1) for _ in range(n)]
 
-    dp = [[0]*(target+1) for _ in range(n)]
-
-    if arr[0] == 0:
+    if num[0] == 0:
         dp[0][0] = 2
     else:
         dp[0][0] = 1
     
-    if arr[0] !=0 and arr[0] <= target:
-        dp[0][arr[0]] = 1
+    if num[0] !=0 and num[0] <= tar:
+        dp[0][num[0]] = 1
     
     for ind in range(1, n):
-        for tar in range(1, target):
-            not_take = dp[ind-1][tar]
+        for target in range(1, tar+1):
+            not_take = dp[ind-1][target]
 
             take = 0
-            if arr[ind] <= tar:
-                take = dp[ind-1][tar - arr[ind]]
+            if num[ind] <= target:
+                take = dp[ind-1][target - num[ind]]
 
-            dp[ind][tar] = (take + not_take) % (10**9+7)
+            dp[ind][target] = (take + not_take) % (10**9+7)
     return dp[n-1][tar]
 
+
+def countPartitions(n, d, arr):
+    totalSum = sum(arr)
+
+    if (totalSum - d) < 0 or (totalSum-d)%2:
+        return 0
+    return findWays(arr, (totalSum-d)//2)
 
 print(countPartitions(len(arr), d, arr))
